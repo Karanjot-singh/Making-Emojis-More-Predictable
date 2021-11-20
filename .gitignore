@@ -136,3 +136,5 @@ src/finalModels/RandomForestNB/fin_t2_train.npy
 src/finalModels/RandomForestNB/finalTestLabels.labels
 .gitignore
 src/finalModels/RandomForestNB/finalTrainLabels.labels
+src/finalModels/RandomForestNB/finalDevLabels.labels
+src/finalModels/RandomForestNB/fin_t2_trial.npy
