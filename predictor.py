@@ -64,7 +64,7 @@ def get_prediction(text):
     print(finPre)
 
     bow_test =  vec.transform([finPre]).toarray()
-    model = pickle.load(open('../finalModels/SVM/models/noWE_SVM_linear_0.3','rb'))
+    model = pickle.load(open('./src/finalModels/SVM/models/noWE_SVM_linear_0.3','rb'))
     prediction = model.predict(bow_test)
 
     print(prediction)
