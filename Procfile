@@ -1,1 +1,1 @@
-web: gunicorn src.site.predictor:app
+web: gunicorn predictor:app
