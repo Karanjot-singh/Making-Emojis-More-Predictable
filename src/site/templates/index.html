@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Predict Emoji</title>
+</head>
+<body style="background-color: rgb(16, 20, 32); ">
+	<div style="text-align: center;"><img style="text-align: right; max-width: 250px ;"  src="/static/emoji.gif" alt="emoji predictor"></div>
+	<div class='form' style="text-align: center;">
+		<form action="/" method = "post">
+			<div style="padding-top: 50px;">
+				<input type="text" name="tweet" style="width: 600px; height: 40px; color: rgb(255, 217, 0); background-color: rgb(87, 86, 82); border-color: rgb(255, 217, 0); border-radius: 10px;">
+			</div>
+			<p style="font-size: 50px; padding-bottom: 0px; color: red;">{{ prediction	 | safe }}</p>
+			<select name="models" action="/" style="color: rgb(31, 11, 85);stroke-width: 5px; background-color: rgb(255, 217, 0); border-radius: 10px; width: 150px;height: 30px; text-align: center; ;">
+				{% for model in models %}
+					<option style="text-align: center;" value="{{model}}">{{model}}</option>
+				{% endfor %}
+			</select>
+		</form>
+	</div>
+</body>
+</html>
