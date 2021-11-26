@@ -141,3 +141,6 @@ src/finalModels/RandomForestNB/fin_t2_trial.npy
 src/finalModels/RandomForestNB/fin_noWE_t2_test.npy
 src/finalModels/RandomForestNB/fin_noWE_t2_train.npy
 src/finalModels/RandomForestNB/fin_noWE_t2_trial.npy
+src/finalModels/RandomForestNB/noWE_t2_test.npy
+src/finalModels/RandomForestNB/noWE_t2_train.npy
+src/finalModels/RandomForestNB/noWE_t2_trial.npy
