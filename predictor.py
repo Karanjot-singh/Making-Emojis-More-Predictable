@@ -118,7 +118,7 @@ def addWE(text,embedding,bow_test):
     new_text = np.concatenate((emb_text, bow_test), axis=1)
     return new_text
 
-modelsList = {'AdaBoost':'finalModelAB','SVM+WE':'glove_SVM_0.3','SVM':'noWE_SVM_0.3'}
+modelsList = {'AdaBoost':'finalModelAB','SVM+WE':'SVM_linear_0.3','SVM':'noWE_SVM_0.3'}
 
 def get_prediction(text,mod):
     vec = pickle.load(open('./tfvec','rb'))
