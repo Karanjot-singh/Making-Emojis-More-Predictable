@@ -15,17 +15,7 @@ from keras.models import Sequential
 from keras.layers import LSTM, RNN, Dense, Dropout, Embedding, RNN, Bidirectional, Add, merge, concatenate
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 import keras
-import wget
 
-
-
-# url = 'https://drive.google.com/file/d/16VNOpBVhTV9BZVIL-hxBBeYLCSxydqDR/view?usp=sharing'
-
-# filename = wget.download(url)
-
-# print(filename)
-
-# gloveEmbs = open(print(filename), encoding='utf-8')
 
 
 # gloveEmbs = open('./src/glove.twitter.27B.200d.txt', encoding='utf-8')
