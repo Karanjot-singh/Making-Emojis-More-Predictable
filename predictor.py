@@ -33,7 +33,19 @@ import keras
 
 embeddings = pickle.load(open('glove_dict_2','rb'))
 
-
+input = keras.Input(shape=(10, 200))
+x = Bidirectional(LSTM(128, return_sequences=True))(input)
+x = Bidirectional(LSTM(128))(x)
+x = Dropout(0.3)(x)
+x = Bidirectional(LSTM(128, return_sequences=True))(input)
+x = Bidirectional(LSTM(128))(x)
+x = Dropout(0.3)(x)
+x = Dense(100)(x)
+x = Dropout(0.5)(x)
+outputs = Dense(20, activation='softmax')(x)
+bilstm_model = keras.Model(input, outputs)
+bilstm_model.compile("adam", "categorical_crossentropy", metrics=["accuracy"])
+bilstm_model.load_weights('./src/finalModels/modelPickles/bilstmModelLoss1.h5')
 
 def embeddingOutput(X):
     """
@@ -172,19 +184,6 @@ def lstmPredict(text):
     return pred
 
 def bilstmPredict(text):
-    input = keras.Input(shape=(10, 200))
-    x = Bidirectional(LSTM(128, return_sequences=True))(input)
-    x = Bidirectional(LSTM(128))(x)
-    x = Dropout(0.3)(x)
-    x = Bidirectional(LSTM(128, return_sequences=True))(input)
-    x = Bidirectional(LSTM(128))(x)
-    x = Dropout(0.3)(x)
-    x = Dense(100)(x)
-    x = Dropout(0.5)(x)
-    outputs = Dense(20, activation='softmax')(x)
-    bilstm_model = keras.Model(input, outputs)
-    bilstm_model.compile("adam", "categorical_crossentropy", metrics=["accuracy"])
-    bilstm_model.load_weights('./src/finalModels/modelPickles/bilstmModelLoss1.h5')
     p_processed = p.clean(text)
     finPre = clean_text(p_processed)
     text = embeddingOutput([finPre])
@@ -201,7 +200,7 @@ def get_prediction(text,mod):
     modelsPath = './src/finalModels/modelPickles/'
     if mod == 'LSTM':
         return lstmPredict(text)
-    elif mod in 'BiLSTM':
+    elif mod == 'BiLSTM':
         return bilstmPredict(text)
     elif mod in ['AdaBoost','SVM','LR','SGD']:
         bow_test = addWE(text,'word2vec',bow_test)
