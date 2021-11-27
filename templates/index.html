@@ -4,21 +4,26 @@
 	<meta charset="utf-8">
 	<title>Predict Emoji</title>
 </head>
-<body style="background-color: rgb(16, 20, 32); ">
+<body style="background-color: rgb(16, 20, 32); font-family: Ubuntu;">
 	<div style="text-align: center;"><img style="text-align: right; max-width: 250px ;"  src="/static/emoji.gif" alt="emoji predictor"></div>
 	<div class='form' style="text-align: center;">
 		<form action="/" method = "post">
+			<p style="font-size: 30px; padding: 10px; padding-bottom: 0px;">
+				{% for emoji in mapping.values() %}
+					{{ emoji | safe}}
+				{% endfor %}
+			</p>
 			<div style="padding-top: 50px;">
-				<input type="text" name="tweet" value="{{ request.form['tweet'] }}" style="width: 600px; height: 40px; color: rgb(255, 217, 0); background-color: rgb(87, 86, 82); border-color: rgb(255, 217, 0); border-radius: 10px;">
-				<input type="submit" value="Submit" style="color:rgb(255, 102, 0);stroke-width: 5px; background-color:transparent; border-radius: 4px; width: 80px;height: 40px; text-align: center; padding: 10px; border-color: rgb(255, 102, 0); ">
+				<input type="text" name="tweet" value="{{ request.form['tweet'] }}" style="width: 600px; height: 40px; color: rgb(255, 217, 0); background-color: rgb(87, 86, 82); border-color: rgb(255, 217, 0); border-radius: 10px; padding-top: 0px;">
+				<input type="submit" value="Submit" style="color:rgb(255, 102, 0);stroke-width: 15px; background-color:transparent; border-radius: 4px; width: 80px;height: 40px; text-align: center; padding: 10px; border-color: rgb(255, 102, 0); ">
 			</div>
-			<p style="font-size: 50px; padding-bottom: 0px; color: red;">{{ prediction	 | safe }}</p>
-			<select name="models" action="/" style="color: rgb(31, 11, 85);stroke-width: 5px; background-color: rgb(255, 217, 0); border-radius: 10px; width: 150px;height: 30px; text-align: center;">
+			<p style="font-size: 50px; padding-bottom: 0px;">{{ prediction	 | safe }}</p>
+			<select name="models" action="/" style="color: rgb(255, 217, 0);stroke-width: 5px; background-color: transparent; border-radius: 10px; width: 150px;height: 30px; text-align: center; border: 1px solid rgb(255, 217, 0)">
 				{% for model in models %}
 					{% if request.form['models'] == model %}
-					<option style="text-align: center;" value="{{model}}" selected="selected">{{model}}</option>
+					<option style="background-color: rgb(16, 20, 32); opacity: 1;" value="{{model}}" selected="selected">{{model}}</option>
 					{% else %}
-					<option style="text-align: center;" value="{{model}}">{{model}}</option>
+					<option style="background-color: rgb(16, 20, 32); opacity: 1;" value="{{model}}">{{model}}</option>
 					{% endif %}
 				{% endfor %}
 			</select>

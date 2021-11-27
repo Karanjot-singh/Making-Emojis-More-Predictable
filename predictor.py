@@ -14,16 +14,35 @@ from collections import defaultdict
 from keras.models import Sequential
 from keras.layers import LSTM, RNN, Dense, Dropout, Embedding, RNN, Bidirectional, Add, merge, concatenate
 from keras.callbacks import EarlyStopping, ModelCheckpoint
+import keras
+import wget
 
 
-gloveEmbs = open('./src/glove.twitter.27B.200d.txt', encoding='utf-8')
-embeddings = {}
-for line in gloveEmbs:
-    values = line.split()
-    word = values[0]
-    coefs = np.asarray(values[1:], dtype='float32')
-    embeddings[word] = coefs
-gloveEmbs.close()
+
+# url = 'https://drive.google.com/file/d/16VNOpBVhTV9BZVIL-hxBBeYLCSxydqDR/view?usp=sharing'
+
+# filename = wget.download(url)
+
+# print(filename)
+
+# gloveEmbs = open(print(filename), encoding='utf-8')
+
+
+# gloveEmbs = open('./src/glove.twitter.27B.200d.txt', encoding='utf-8')
+
+
+# embeddings = {}
+# for line in gloveEmbs:
+#     values = line.split()
+#     word = values[0]
+#     coefs = np.asarray(values[1:], dtype='float32')
+#     embeddings[word] = coefs
+# gloveEmbs.close()
+
+
+
+embeddings = pickle.load(open('glove_dict_2','rb'))
+
 
 
 def embeddingOutput(X):
@@ -78,10 +97,10 @@ def word_embeddings(tweets, embedding):
         w2v = models.Word2Vec(X, vector_size=200, window=5, sg=0,min_count=1)
         model = dict(zip(w2v.wv.index_to_key, w2v.wv.vectors))
         
-    elif embedding == "glove":
-        with open("./src/glove.twitter.27B.200d.txt", "rb") as lines:
-            model = {line.split()[0]: np.array(map(float, line.split()[1:]))
-                for line in lines}
+    # elif embedding == "glove":
+    #     with open("./src/glove.twitter.27B.200d.txt", "rb") as lines:
+    #         model = {line.split()[0]: np.array(map(float, line.split()[1:]))
+    #             for line in lines}
 
 
     vec = TfidfEmbeddingVectorizer(model)
@@ -102,7 +121,7 @@ def word2vec(tweets):
 stopword = nltk.corpus.stopwords.words('english')
 stopword += ['yr', 'year', 'woman', 'man', 'girl','boy','one', 'two', 'sixteen', 'yearold', 'fu', 'weeks', 'week',
             'treatment', 'associated', 'patients', 'may','day', 'case','old']
-mapping = {0:'&#x2764',1:'&#x1F60D',2:'&#x1F602',3:'&#x1F495',4:'&#x1F525', 5:'&#x1F60A',6:'&#x1F60E',7:'&#x2728',8:'&#x1F499',9:'&#x1F618',10:'&#x1F4F7',11:'&#x1F1F8',12:'&#x2600',13:'&#x1F49C',14:'&#x1F609',15:'&#x1F4AF',16:'&#x1F601',17:'&#x1F384',18:'&#x1F4F8',19:'&#x1F61C'}
+mapping = {0:'&#x2764&#xFE0F',1:'&#x1F60D',2:'&#x1F602',3:'&#x1F495',4:'&#x1F525', 5:'&#x1F60A',6:'&#x1F60E',7:'&#x2728',8:'&#x1F499',9:'&#x1F618',10:'&#x1F4F7',11:'&#x1F1FA&#x1F1F8',12:'&#x2600&#xFE0F',13:'&#x1F49C',14:'&#x1F609',15:'&#x1F4AF',16:'&#x1F601',17:'&#x1F384',18:'&#x1F4F8',19:'&#x1F61C'}
 def clean_text(text):
     text = re.sub(r'@user','',text)
     text  = "".join([char.lower() for char in text if char not in string.punctuation])
@@ -144,7 +163,7 @@ def addWE(text,embedding,bow_test):
     new_text = np.concatenate((emb_text, bow_test), axis=1)
     return new_text
 
-modelsList = {'AdaBoost':'finalModelAB','SVM':'SVM_linear_0.3','LR':'WE_LR_liblinear','SGD':'WE_SGD_modified_huber','LSTM':'lstmBestLoss.h5'}
+modelsList = {'AdaBoost':'finalModelAB','SVM':'SVM_linear_0.3','LR':'WE_LR_liblinear','SGD':'WE_SGD_modified_huber','LSTM':'lstmBestLoss.h5','BiLSTM':'bilstmModelLoss1.h5'}
 
 def lstmPredict(text):
     lstm_model = Sequential()
@@ -162,14 +181,38 @@ def lstmPredict(text):
     pred = np.argmax(pred,axis=1)
     return pred
 
+def bilstmPredict(text):
+    input = keras.Input(shape=(10, 200))
+    x = Bidirectional(LSTM(128, return_sequences=True))(input)
+    x = Bidirectional(LSTM(128))(x)
+    x = Dropout(0.3)(x)
+    x = Bidirectional(LSTM(128, return_sequences=True))(input)
+    x = Bidirectional(LSTM(128))(x)
+    x = Dropout(0.3)(x)
+    x = Dense(100)(x)
+    x = Dropout(0.5)(x)
+    outputs = Dense(20, activation='softmax')(x)
+    bilstm_model = keras.Model(input, outputs)
+    bilstm_model.compile("adam", "categorical_crossentropy", metrics=["accuracy"])
+    bilstm_model.load_weights('./src/finalModels/modelPickles/bilstmModelLoss1.h5')
+    p_processed = p.clean(text)
+    finPre = clean_text(p_processed)
+    text = embeddingOutput([finPre])
+    pred = bilstm_model.predict(text)
+    pred = np.argmax(pred,axis=1)
+    return pred
+
+
 def get_prediction(text,mod):
     vec = pickle.load(open('./tfvec','rb'))
     p_processed = p.clean(text)
     finPre = clean_text(p_processed)
     bow_test =  vec.transform([finPre]).toarray()
     modelsPath = './src/finalModels/modelPickles/'
-    if mod in ['LSTM']:
+    if mod == 'LSTM':
         return lstmPredict(text)
+    elif mod in 'BiLSTM':
+        return bilstmPredict(text)
     elif mod in ['AdaBoost','SVM','LR','SGD']:
         bow_test = addWE(text,'word2vec',bow_test)
     model = pickle.load(open(modelsPath+modelsList[mod],'rb'))
@@ -189,7 +232,7 @@ def hello_world():
         if len(request.form['tweet']) != 0:
             prediction = get_prediction(request.form['tweet'],model)
         selected = model
-    return render_template('index.html',prediction=mapping[prediction[0]],models=models,selected=selected)
+    return render_template('index.html',prediction=mapping[prediction[0]],models=models,selected=selected,mapping=mapping)
 
 
 if __name__ == '__main__':
