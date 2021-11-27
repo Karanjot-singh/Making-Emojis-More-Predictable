@@ -9,14 +9,20 @@
 	<div class='form' style="text-align: center;">
 		<form action="/" method = "post">
 			<div style="padding-top: 50px;">
-				<input type="text" name="tweet" style="width: 600px; height: 40px; color: rgb(255, 217, 0); background-color: rgb(87, 86, 82); border-color: rgb(255, 217, 0); border-radius: 10px;">
+				<input type="text" name="tweet" value="{{ request.form['tweet'] }}" style="width: 600px; height: 40px; color: rgb(255, 217, 0); background-color: rgb(87, 86, 82); border-color: rgb(255, 217, 0); border-radius: 10px;">
+				<input type="submit" value="Submit" style="color:rgb(255, 102, 0);stroke-width: 5px; background-color:transparent; border-radius: 4px; width: 80px;height: 40px; text-align: center; padding: 10px; border-color: rgb(255, 102, 0); ">
 			</div>
 			<p style="font-size: 50px; padding-bottom: 0px; color: red;">{{ prediction	 | safe }}</p>
-			<select name="models" action="/" style="color: rgb(31, 11, 85);stroke-width: 5px; background-color: rgb(255, 217, 0); border-radius: 10px; width: 150px;height: 30px; text-align: center; ;">
+			<select name="models" action="/" style="color: rgb(31, 11, 85);stroke-width: 5px; background-color: rgb(255, 217, 0); border-radius: 10px; width: 150px;height: 30px; text-align: center;">
 				{% for model in models %}
+					{% if request.form['models'] == model %}
+					<option style="text-align: center;" value="{{model}}" selected="selected">{{model}}</option>
+					{% else %}
 					<option style="text-align: center;" value="{{model}}">{{model}}</option>
+					{% endif %}
 				{% endfor %}
 			</select>
+			
 		</form>
 	</div>
 </body>

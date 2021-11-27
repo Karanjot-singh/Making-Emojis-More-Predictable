@@ -11,11 +11,38 @@ from nltk import word_tokenize
 from flask import Flask, render_template, request
 from gensim import models
 from collections import defaultdict
+from keras.models import Sequential
+from keras.layers import LSTM, RNN, Dense, Dropout, Embedding, RNN, Bidirectional, Add, merge, concatenate
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 
 
+gloveEmbs = open('./src/glove.twitter.27B.200d.txt', encoding='utf-8')
+embeddings = {}
+for line in gloveEmbs:
+    values = line.split()
+    word = values[0]
+    coefs = np.asarray(values[1:], dtype='float32')
+    embeddings[word] = coefs
+gloveEmbs.close()
+
+
+def embeddingOutput(X):
+    """
+    X: input matrix
+    """
+    maxLen = 10
+    embDim = 200
+    embOutput = np.zeros((len(X), maxLen, embDim))
+    for i in range(len(X)):
+        X[i] = X[i].split()
+        for j in range(maxLen):
+            try:
+                embOutput[i][j] = embeddings[X[i][j].lower()]
+            except:
+                embOutput[i][j] = np.zeros((embDim, ))
+    return embOutput
 
 app = Flask(__name__)
-
 
 class TfidfEmbeddingVectorizer(object):
     def __init__(self, model):
@@ -114,11 +141,26 @@ def clean_text(text):
 
 def addWE(text,embedding,bow_test):
     emb_text = word_embeddings([text], embedding)
-    print("hello")
     new_text = np.concatenate((emb_text, bow_test), axis=1)
     return new_text
 
-modelsList = {'AdaBoost':'finalModelAB','SVM+WE':'SVM_linear_0.3','SVM':'noWE_SVM_0.3'}
+modelsList = {'AdaBoost':'finalModelAB','SVM':'SVM_linear_0.3','LR':'WE_LR_liblinear','SGD':'WE_SGD_modified_huber','LSTM':'lstmBestLoss.h5'}
+
+def lstmPredict(text):
+    lstm_model = Sequential()
+    lstm_model.add(LSTM(100, input_shape=(10, 200))) #hidden state has 64 dims
+    lstm_model.add(Dropout(0.5))
+    lstm_model.add(Dense(50, activation='relu'))
+    lstm_model.add(Dropout(0.3))
+    lstm_model.add(Dense(20, activation='softmax'))
+    lstm_model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    lstm_model.load_weights('./src/finalModels/modelPickles/lstmBestLoss.h5')
+    p_processed = p.clean(text)
+    finPre = clean_text(p_processed)
+    text = embeddingOutput([finPre])
+    pred = lstm_model.predict(text)
+    pred = np.argmax(pred,axis=1)
+    return pred
 
 def get_prediction(text,mod):
     vec = pickle.load(open('./tfvec','rb'))
@@ -126,9 +168,9 @@ def get_prediction(text,mod):
     finPre = clean_text(p_processed)
     bow_test =  vec.transform([finPre]).toarray()
     modelsPath = './src/finalModels/modelPickles/'
-    if mod in ['SVM+WE']:
-        bow_test = addWE(text,'word2vec',bow_test)
-    elif mod in ['AdaBoost']:
+    if mod in ['LSTM']:
+        return lstmPredict(text)
+    elif mod in ['AdaBoost','SVM','LR','SGD']:
         bow_test = addWE(text,'word2vec',bow_test)
     model = pickle.load(open(modelsPath+modelsList[mod],'rb'))
     prediction = model.predict(bow_test)
@@ -141,10 +183,13 @@ def get_prediction(text,mod):
 def hello_world():
     prediction = [0]
     models = modelsList.keys()
+    selected = 'SVM'
     if request.method == 'POST':
         model = request.form['models']
-        prediction = get_prediction(request.form['tweet'],model)
-    return render_template('index.html',prediction=mapping[prediction[0]],models=models)
+        if len(request.form['tweet']) != 0:
+            prediction = get_prediction(request.form['tweet'],model)
+        selected = model
+    return render_template('index.html',prediction=mapping[prediction[0]],models=models,selected=selected)
 
 
 if __name__ == '__main__':
