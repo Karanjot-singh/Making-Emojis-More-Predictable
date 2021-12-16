@@ -129,18 +129,14 @@ dmypy.json
 .pyre/
 
 
-# Dataset
-Dataset/
-src/finalModels/RandomForestNB/fin_t2_test.npy
-src/finalModels/RandomForestNB/fin_t2_train.npy
-src/finalModels/RandomForestNB/finalTestLabels.labels
+
+
 .gitignore
-src/finalModels/RandomForestNB/finalTrainLabels.labels
-src/finalModels/RandomForestNB/finalDevLabels.labels
-src/finalModels/RandomForestNB/fin_t2_trial.npy
-src/finalModels/RandomForestNB/fin_noWE_t2_test.npy
-src/finalModels/RandomForestNB/fin_noWE_t2_train.npy
-src/finalModels/RandomForestNB/fin_noWE_t2_trial.npy
-src/finalModels/RandomForestNB/noWE_t2_test.npy
-src/finalModels/RandomForestNB/noWE_t2_train.npy
-src/finalModels/RandomForestNB/noWE_t2_trial.npy
+
+glove_dict
+glove_dict_2
+dataFinal/npy_files
+src/glove.twitter.27B.200d.txt
+src/finalModels/modelPickels/non-site/rnnBestAcc.h5
+src/finalModels/modelPickels/non-site/WE-KNN-uniform_2
+src/finalModels/modelPickels/non-site/finalModelRF_NoWE_2K
