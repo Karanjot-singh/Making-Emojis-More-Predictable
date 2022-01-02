@@ -1,4 +1,4 @@
-# IMDb Movie Rating Predictor ML Project
+# Making Emojis More Predictable
 
 by **Karan Abrol**, **Karanjot Singh** and **Pritish Wadhwa**, Natural Language Processing (CSE546) under the guidance of **Dr. Shad Akhtar** from **Indraprastha Institute of Information Technology, Delhi**.
 
