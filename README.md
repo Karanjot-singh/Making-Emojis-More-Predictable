@@ -33,7 +33,6 @@ The data we used consists of a list of tweets associated with a single emoji, in
   - Naive Bayes
   - Adaboost Classifier
   - Support Vector Machine
-  - 
 
 - Deep Learning Models:
   - RNN
