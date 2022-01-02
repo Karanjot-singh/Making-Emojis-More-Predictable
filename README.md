@@ -12,9 +12,9 @@ We started off by collecting the data. The data was then thoroughly studied and 
 </p>
 
 ## Deployment
-![Emoji Prediction Website](https://fierce-garden-64530.herokuapp.com)
+[Emoji Prediction Website](https://fierce-garden-64530.herokuapp.com)
 ### Screenshots
-!Prediction Website1](https://user-images.githubusercontent.com/55680995/147876786-56302f39-740f-4b13-afca-420245b7fa53.jpg)
+![Prediction Website1](https://user-images.githubusercontent.com/55680995/147876786-56302f39-740f-4b13-afca-420245b7fa53.jpg)
 ![Prediction Website2](https://user-images.githubusercontent.com/55680995/147876808-a86083dd-20fd-4b6a-92b0-84fbad23ceee.jpg)
 
 
