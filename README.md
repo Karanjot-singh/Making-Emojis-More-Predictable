@@ -11,6 +11,14 @@ by **Karan Abrol**, **Karanjot Singh** and **Pritish Wadhwa**, Natural Language 
 We started off by collecting the data. The data was then thoroughly studied and preprocessed. Key features were also extracted at this stage. Due to computational restrictions, a subset of data was taken which was further divided into training, test- ing and validation split, such that the distribution of any class in any two sets were same. After this, various machine learning and deep learning models were applied on the data set and the results were generated and analysed.
 </p>
 
+## Deployment
+![Emoji Prediction Website](https://fierce-garden-64530.herokuapp.com)
+### Screenshots
+!Prediction Website1](https://user-images.githubusercontent.com/55680995/147876786-56302f39-740f-4b13-afca-420245b7fa53.jpg)
+![Prediction Website2](https://user-images.githubusercontent.com/55680995/147876808-a86083dd-20fd-4b6a-92b0-84fbad23ceee.jpg)
+
+
+
 ## Dataset
 <p align="justify">
 The data we used consists of a list of tweets associated with a single emoji, indexed by 20 labels for each of the 20 emojis. 5,00,000 Tweets by users in the United States, from October 2015 to Jan 2018, were retrieved using the Twitter API. The script for scraping this dataset was made available by the SemEval 2018 challenge. Due to computational limitations we merged the test and trial data, and further divided that into training, trial and test data with a split of 70:10:20. We maintained the label ratios for each emoji across the three sets to best reflect how frequently they are used in real life.
